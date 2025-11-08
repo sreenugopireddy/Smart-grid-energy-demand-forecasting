@@ -3,7 +3,7 @@
 Predicting future energy demand using Machine Learning & Deep Learning (LSTM) for smart grid optimization.
 <img width="1498" height="712" alt="image" src="https://github.com/user-attachments/assets/0cdfcfe4-0fdf-4c94-a18a-50f76cd27c4d" />
 🧠 Project Overview
-
+priview link--https://smart-grid-energy-demand-forecasting-zvjgfqxycvvqgcqerc5dzp.streamlit.app/
 This project uses Machine Learning and Deep Learning models to forecast electricity demand in a smart grid system.
 Accurate energy demand forecasting helps optimize power generation, reduce wastage, and ensure stable electricity distribution.
 
