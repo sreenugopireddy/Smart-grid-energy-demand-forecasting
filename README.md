@@ -162,6 +162,4 @@ Include anomaly detection for irregular power usage patterns
 👨‍💻 Author
 
 Sreenu Gopireddy
-📧 [sreenugopireddy@gmail.com
-]
-🔗 GitHub Profile
+📧 [sreenugopireddy65@gmail.com]
