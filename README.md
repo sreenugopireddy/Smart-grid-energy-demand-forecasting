@@ -1,165 +1,170 @@
-⚡ Smart Grid Energy Demand Forecasting
 
-Predicting future energy demand using Machine Learning & Deep Learning (LSTM) for smart grid optimization.
+# Smart Grid Energy Demand Forecasting
+
+Forecasting electricity demand at hourly resolution using LSTM deep learning — built to optimize power generation, reduce wastage, and support stable grid distribution.
+
+**Live Demo →** [smart-grid-energy-demand-forecasting.streamlit.app](https://smart-grid-energy-demand-forecasting-zvjgfqxycvvqgcqerc5dzp.streamlit.app/)
+
+---
 <img width="1498" height="712" alt="image" src="https://github.com/user-attachments/assets/0cdfcfe4-0fdf-4c94-a18a-50f76cd27c4d" />
-🧠 Project Overview
-priview link--https://smart-grid-energy-demand-forecasting-zvjgfqxycvvqgcqerc5dzp.streamlit.app/
-This project uses Machine Learning and Deep Learning models to forecast electricity demand in a smart grid system.
-Accurate energy demand forecasting helps optimize power generation, reduce wastage, and ensure stable electricity distribution.
+## The Problem
 
-Using historical hourly energy consumption data, the system predicts future energy demand (in Megawatts) and visualizes trends through an interactive Streamlit dashboard.
+Energy providers need to know how much electricity will be consumed hours in advance — too little generation causes outages, too much causes waste and cost overruns. Traditional statistical methods struggle with the non-linear, cyclical nature of energy demand patterns.
 
-🚀 Key Features
+This project applies LSTM (Long Short-Term Memory) neural networks to historical hourly consumption data to produce accurate short-term forecasts, surfaced through an interactive Streamlit dashboard.
 
-✅ Predicts future electricity demand using LSTM neural networks
-✅ Interactive Streamlit web dashboard for visualization
-✅ Real-time forecast horizon control (1–48 hours)
-✅ Plotly graphs for interactive and dynamic charts
-✅ Supports custom dataset upload (.csv files)
-✅ Displays last recorded demand and future predicted demand
-✅ Downloadable forecast data in .csv format
+---
 
-🧩 Tech Stack
-Category	Tools / Libraries
-Language	Python 3
-Frameworks	TensorFlow / Keras, Scikit-learn
-Visualization	Plotly, Matplotlib, Seaborn
-Web App	Streamlit
-Data Handling	Pandas, NumPy
-Version Control	Git + GitHub
-📊 Model Used
-🔹 LSTM (Long Short-Term Memory)
+## What It Does
 
-LSTM is a type of Recurrent Neural Network (RNN) that captures long-term temporal dependencies in sequential data, making it ideal for time series forecasting such as energy demand.
+- Forecasts electricity demand (in MW) up to 48 hours ahead
+- Trains an LSTM model on real-world hourly consumption data (AEP dataset, Kaggle)
+- Serves predictions through an interactive web dashboard with Plotly visualizations
+- Supports custom `.csv` dataset uploads for reuse across grid zones
+- Allows forecast export as `.csv` for downstream use
 
-Model Summary:
+---
 
-Input: Last 24 hours of energy demand
+## Architecture
 
-Output: Next hour’s predicted demand
+### Model Design
 
-Layers:
+The core model is a stacked LSTM network — chosen for its ability to capture long-range temporal dependencies in sequential data, which simpler models like ARIMA cannot do reliably.
 
-LSTM(64, return_sequences=True)
+```
+Input: 24-hour sliding window of normalized demand values
+       ↓
+LSTM(64, return_sequences=True)   # Captures broad temporal patterns
+       ↓
+LSTM(32)                          # Refines sequence representation
+       ↓
+Dense(16, activation='relu')      # Non-linear feature combination
+       ↓
+Dense(1)                          # Single-step demand prediction (MW)
 
-LSTM(32)
-
-Dense(16, activation='relu')
-
-Dense(1)
-
-Loss Function: Mean Squared Error (MSE)
-
+Loss: Mean Squared Error
 Optimizer: Adam
+Scaling: MinMaxScaler (fitted on training set, persisted via joblib)
+```
 
-🧰 Project Structure
+### Inference Pipeline
+
+```
+Raw CSV → Timestamp parsing → MinMaxScaler → 24-step window →
+LSTM model → Inverse transform → Forecast output → Plotly chart / CSV export
+```
+
+---
+
+## Results
+
+- The model captures daily demand cycles (morning peaks, overnight troughs) with high fidelity
+- RMSE values reflect stable generalization on held-out data
+- Forecast curves show realistic demand shape without over-smoothing
+
+---
+
+## Tech Stack
+
+| Layer | Tools |
+|---|---|
+| Deep Learning | TensorFlow / Keras |
+| Data Processing | Pandas, NumPy, Scikit-learn |
+| Visualization | Plotly, Matplotlib, Seaborn |
+| Web App | Streamlit |
+| Model Persistence | Keras `.keras` format, `joblib` for scaler |
+| Version Control | Git + GitHub |
+
+---
+
+## Project Structure
+
+```
 smart-grid-energy-forecasting/
-│
 ├── data/
-│   └── AEP_hourly.csv                # Dataset (hourly energy consumption)
-│
+│   └── AEP_hourly.csv        # Hourly energy consumption dataset
 ├── model/
-│   ├── energy_lstm.keras             # Trained LSTM model
-│   └── scaler.pkl                    # Saved MinMaxScaler
-│
-├── app.py                            # Streamlit dashboard
-├── train_model.py                    # Model training script
-├── requirements.txt                  # Dependencies
-└── README.md                         # Project documentation
+│   ├── energy_lstm.keras     # Trained LSTM model
+│   └── scaler.pkl            # Fitted MinMaxScaler
+├── app.py                    # Streamlit dashboard
+├── train_model.py            # Model training script
+├── requirements.txt
+└── README.md
+```
 
-🧠 How It Works
+---
 
-Data Preprocessing
+## Running Locally
 
-Loads historical energy consumption data
+### 1. Clone the repository
 
-Converts timestamps and handles missing values
-
-Scales features using MinMaxScaler
-
-Model Training
-
-Uses past 24 hours of consumption to predict the next hour
-
-Trains an LSTM model and saves it for future inference
-
-Prediction
-
-Model forecasts future demand for user-selected time horizons (1–48 hours)
-
-Visualization
-
-Interactive dashboard plots actual vs predicted energy usage
-
-Displays demand metrics and allows CSV download of predictions
-
-📈 Results
-
-The LSTM model successfully learns the temporal patterns in energy consumption.
-
-The prediction graph shows realistic rises and falls matching daily demand cycles.
-
-RMSE (Root Mean Square Error) values indicate good accuracy and stable model performance.
-
-🖥️ Run Locally
-1️⃣ Clone the repository
+```bash
 git clone https://github.com/sreenugopireddy/Smart-grid-energy-demand-forecasting.git
 cd Smart-grid-energy-demand-forecasting
+```
 
-2️⃣ Create and activate a virtual environment
+### 2. Set up a virtual environment
+
+```bash
 python -m venv venv
-venv\Scripts\activate       # (Windows)
-# or
-source venv/bin/activate    # (Mac/Linux)
 
-3️⃣ Install dependencies
+# macOS / Linux
+source venv/bin/activate
+
+# Windows
+venv\Scripts\activate
+```
+
+### 3. Install dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-4️⃣ Train the model
+### 4. Train the model
+
+```bash
 python train_model.py
+```
 
-5️⃣ Launch the Streamlit dashboard
+This loads `data/AEP_hourly.csv`, fits the scaler, trains the LSTM, and saves both artifacts to `model/`.
+
+### 5. Launch the dashboard
+
+```bash
 streamlit run app.py
+```
 
+Open `http://localhost:8501` in your browser.
 
-Then open 👉 http://localhost:8501 in your browser.
+---
 
-📦 Requirements
+## Dataset
 
-All dependencies are listed in requirements.txt:
+**AEP Hourly Energy Consumption** — publicly available on [Kaggle](https://www.kaggle.com/datasets/robikscube/hourly-energy-consumption).  
+Contains years of hourly MW readings from American Electric Power's service territory.
 
-pandas
-numpy
-matplotlib
-seaborn
-scikit-learn
-tensorflow
-plotly
-streamlit
-joblib
+---
 
-📸 Dashboard Preview
-Section	Description
-📊 Energy Demand Chart	Interactive Plotly graph showing actual & forecasted demand
-🔮 Forecast Panel	User chooses how many future hours to predict
-📈 Download Option	Export predicted data as CSV
-💡 Metrics	Displays last recorded and predicted demand values
-🧾 Dataset
+## Dependencies
 
-The dataset used is the Hourly Energy Consumption Dataset from Kaggle:
-🔗 AEP Hourly Energy Consumption
+```
+pandas, numpy, scikit-learn, tensorflow, plotly, matplotlib, seaborn, streamlit, joblib
+```
 
-💡 Future Enhancements
+---
 
-Integrate weather and temperature data for improved accuracy
+## Roadmap
 
-Add Prophet and ARIMA models for comparison
+- Integrate weather and temperature features to improve forecast accuracy
+- Benchmark against Prophet and ARIMA baselines
+- Add anomaly detection for irregular consumption patterns
+- Extend to multi-step multi-horizon forecasting
+- Deploy on Hugging Face Spaces with persistent model hosting
 
-Deploy the dashboard on Streamlit Cloud or Hugging Face Spaces
+---
 
-Include anomaly detection for irregular power usage patterns
+## Author
 
-👨‍💻 Author
-
-Sreenu Gopireddy
-📧 [sreenugopireddy65@gmail.com]
+**Sreenu Gopireddy**  
+[sreenugopireddy65@gmail.com](mailto:sreenugopireddy65@gmail.com) · [GitHub](https://github.com/sreenugopireddy)
